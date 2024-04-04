@@ -1,10 +1,12 @@
 package interfaces;
 
+import utils.Data;
+
 public class Main {
 
     public static void main(String[] args) {
-        Rubrica rubrica = new Rubrica("Rubrica");
-        rubrica.setVisible(true);
+        Data.loadData();
+        new Rubrica("Rubrica");
     }
 
 }

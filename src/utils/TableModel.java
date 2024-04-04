@@ -3,16 +3,16 @@ package utils;
 import javax.swing.table.AbstractTableModel;
 
 public class TableModel extends AbstractTableModel {
-    private Users<Persona> users;
-    private String[] header = {"Nome", "Cognome", "Telefono"};
+    private Users users;
+    private String[] columnNames = {"Nome", "Cognome", "Telefono"};
 
-    public TableModel(Users<Persona> users) {
+    public TableModel(Users users) {
         this.users = users;
     }
 
     @Override
     public String getColumnName(int columnIndex) {
-        return header[columnIndex];
+        return columnNames[columnIndex];
     }
 
     @Override
@@ -22,7 +22,7 @@ public class TableModel extends AbstractTableModel {
 
     @Override
     public int getColumnCount() {
-        return header.length;
+        return 3;
     }
 
     @Override
