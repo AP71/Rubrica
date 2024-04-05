@@ -1,108 +1,109 @@
 package utils;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
+import javax.swing.*;
+import java.io.*;
+import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
+import java.sql.*;
+import java.util.Properties;
 import java.util.Scanner;
 
 public class Data {
-
-    private static String path= "./informazioni/";
+    private static Data data;
+    private final String path = "./database/credenziali_database.properties";
+    private Connection connection = null;
+    private String url;
+    private String username;
+    private String password;
+    private String porta;
     private static Users utenti = Users.getInstance();
 
-    public static void loadData() {
-        String newLine;
-        String[] value;
-        Persona newUser;
-        Scanner scanner;
-        try {
-            if (!Files.exists(Path.of(path))) throw new FileNotFoundException();
-            else {
-                File dir = new File(path);
-                if (dir.isDirectory() && dir.list().length > 0) {
-                    for (String file: dir.list()) {
-                        scanner =  new Scanner(new File(path+file));
-                        while(scanner.hasNextLine()) {
-                            newLine = scanner.nextLine();
-                            value = newLine.split(";");
-                            if (value.length == 5) {
-                                newUser = new Persona(value[0], value[1], value[2], value[3], Integer.parseInt(value[4]));
-                                newUser.setFileName(path+file.replaceFirst("[.][^.]+$", ""));
-                                utenti.addUser(newUser);
-                            }
-                        }
-                    }
-                }
-            }
+    private void loadProp() throws IOException {
+        Properties prop = new Properties();
+        prop.load(new FileInputStream(path));
+        url = prop.getProperty("ip-server-mysql");
+        username = prop.getProperty("username");
+        password = prop.getProperty("password");
+        porta = prop.getProperty("porta");
+    }
 
-        } catch (FileNotFoundException notFound) {
+    private Data() throws Exception{
+        this.loadProp();
+        this.connection = DriverManager.getConnection("jdbc:mysql://"+url+":"+porta+"/rubrica", username, password);
+    }
+
+    public static Data getInstance(){
+        if (data == null) {
             try {
-                File dir = new File(path);
-                dir.mkdir();
-            } catch (Exception notFoundException) {
-                notFoundException.printStackTrace();
+                data = new Data();
+            } catch (SQLSyntaxErrorException sql) {
+                JOptionPane.showMessageDialog(null, "Errore di connessione con il database. "+sql.getMessage(),"Errore", JOptionPane.ERROR_MESSAGE);
+                return null;
+            }catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return data;
+    }
+
+    public String registerUser(String username, String pass) {
+        try {
+            Statement stmt = this.connection.createStatement();
+            byte[] salt = Cipher.genSalt();
+            String sql = "insert into utenti(username,password,salt) values (?,?,?);";
+            PreparedStatement prep = connection.prepareStatement(sql);
+            prep.setString(1, username);
+            prep.setString(2, new BigInteger(1, Cipher.encrypt(salt, pass)).toString(16));
+            prep.setString(3, new String(salt));
+            prep.execute();
+            return null;
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+    }
+
+    public String tryLogin(String username, String pass) {
+        try {
+            Statement stmt = this.connection.createStatement();
+            byte[] salt = null;
+            String user = null;
+
+            //Get salt from db table
+            ResultSet rs = stmt.executeQuery("select salt from utenti where username='"+username+"';");
+            while(rs.next()) {
+                salt = rs.getString("salt").getBytes();
+            }
+            if (salt==null) return "Username e/o password errati.";
+
+            //Get salt from db table
+            String pwd = new BigInteger(1, Cipher.encrypt(salt,pass)).toString(16);
+            rs = stmt.executeQuery("select username from utenti where password='"+pwd+"';");
+            while(rs.next()) {
+                user = rs.getString("username");
+            }
+            if (user != null && user.equals(username)) return null;
+            else {
+                return "Username e/o password errati.";
             }
         } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    private static void createAndWrite(Persona p, String filename) throws FileNotFoundException {
-        PrintStream stream = new PrintStream(filename);
-        stream.println(String.join(";", p.getNome(), p.getCognome(), p.getIndirizzo(), p.getTelefono(), p.getEta().toString()));
-        stream.flush();
-        stream.close();
-    }
-
-    public static void storeData(Persona p) {
-        try {
-            if (p.getFileName() == null)
-            {
-                p.setFileName(path+p.getNome()+"-"+p.getCognome());
-                if (Files.notExists(Path.of(p.getFileName().concat(".txt")))) {
-                    createAndWrite(p, p.getFileName().concat(".txt"));
-                } else {
-                    String newFileName;
-                    int i = 1;
-                    while (true) {
-                        newFileName = p.getFileName().concat("("+i+").txt");
-                        if (Files.notExists(Path.of(newFileName))) {
-                            createAndWrite(p, newFileName);
-                            break;
-                        } else i += 1;
-                    }
-                }
-            } else {
-                createAndWrite(p, p.getFileName().concat(".txt"));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+            return e.getMessage();
         }
     }
 
-    public static void addUser(Persona persona) {
-        utenti.addUser(persona);
-        storeData(persona);
+    public void loadContact() {
+
     }
 
-    public static void update(Persona persona) {
-        utenti.update(persona);
-        storeData(persona);
+    public void addContact(Persona persona) {
+
     }
 
-    public static void deleteUser(Persona p) {
-        try {
-            utenti.deleteUser(p);
-            File file = new File(p.getFileName().concat(".txt"));
-            file.delete();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public void updateContact(Persona persona) {
+
     }
-    public static TableModel getUsers() { return new TableModel(utenti); }
+
+    public void deleteContact(Persona p) {
+
+    }
+    public TableModel getUsers() { return new TableModel(utenti); }
 }

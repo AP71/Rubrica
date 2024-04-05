@@ -59,7 +59,7 @@ public class Editor extends JFrame {
                     String telefono = textFieldTelefono.getText();
                     int eta = Integer.parseInt(textFieldEta.getText());
                     if (persona == null) {
-                        Data.addUser(new Persona(nome, cognome, indirizzo, telefono, eta));
+                        Data.getInstance().addContact(new Persona(nome, cognome, indirizzo, telefono, eta));
                         rubrica.reloadData();
                         dispose();
                     } else {
@@ -68,7 +68,7 @@ public class Editor extends JFrame {
                         persona.setIndirizzo(indirizzo);
                         persona.setTelefono(telefono);
                         persona.setEta(eta);
-                        Data.update(persona);
+                        Data.getInstance().updateContact(persona);
                         rubrica.reloadData();
                         dispose();
                     }
