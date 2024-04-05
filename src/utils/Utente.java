@@ -2,17 +2,36 @@ package utils;
 
 public class Utente {
 
-    private String username = "utente1";
+    private static Utente utente;
 
-    private String password = "testerRubrica-2024";
+    private static String username;
 
-    public Utente() {
+    private Utente() {
 
     }
 
-    public boolean tryLogin(String username, String password) {
-        System.out.println(username + " "+ password);
-        return (this.username.equals(username) && this.password.equals(password));
+    public static Utente getInstance(){
+        if (utente == null) utente = new Utente();
+        return utente;
+    }
+
+    public String tryLogin(String username, String password) {
+        String res = Data.getInstance().tryLogin(username, password);
+        System.out.println(res);
+        if (res == null) {
+            this.username = username;
+            return null;
+        } else {
+            return res;
+        }
+    }
+
+    public String register(String username, String password) {
+        String res = Data.getInstance().registerUser(username, password);
+        if (res != null) {
+            return res;
+        }
+        return "";
     }
 
 }

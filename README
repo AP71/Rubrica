@@ -1,0 +1,11 @@
+Get docker image:
+        docker pull mysql
+
+Create docker container:
+        docker run --name rubrica -p 3306:3306 -e MYSQL_ROOT_PASSWORD=rubrica2024 -d mysql:latest
+
+Open bash:
+        docker exec -it rubrica bash
+
+Log in:
+        mysql -h localhost -u root -p

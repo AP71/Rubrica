@@ -30,7 +30,7 @@ public class Rubrica extends JFrame {
         self = this;
         init(LARGHEZZA, ALTEZZA);
         initListener();
-        table.setModel(Data.getUsers());
+        table.setModel(Data.getInstance().getUsers());
         table.getTableHeader().setFont(new Font("Dialog", Font.BOLD, 18));
     }
 
@@ -50,7 +50,7 @@ public class Rubrica extends JFrame {
             } else {
                 int res = JOptionPane.showConfirmDialog(self, "Eliminare la persona: ".concat(user.getNome()).concat(" ").concat(user.getCognome()).concat("?"), "Conferma cancellazione", JOptionPane.YES_NO_OPTION);
                 if (res == JOptionPane.YES_OPTION) {
-                    Data.deleteUser(user);
+                    Data.getInstance().deleteContact(user);
                     reloadData();
                 }
             }
@@ -67,6 +67,6 @@ public class Rubrica extends JFrame {
         this.setVisible(true);
     }
 
-    public void reloadData() { table.setModel(Data.getUsers());}
+    public void reloadData() { table.setModel(Data.getInstance().getUsers());}
 
 }
