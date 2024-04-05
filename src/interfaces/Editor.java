@@ -56,6 +56,12 @@ public class Editor extends JFrame {
                 String indirizzo = textFieldIndirizzo.getText();
                 String telefono = textFieldTelefono.getText();
                 int eta = Integer.parseInt(textFieldEta.getText());
+
+                if (!telefono.matches("^(\\+\\d{1,3}( )?)?((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{4}$")) {
+                    JOptionPane.showMessageDialog(null, "Numero di telefono non valido.","Errore", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
                 if (persona == null) {
                     Data.getInstance().addContact(new Persona(nome, cognome, indirizzo, telefono, eta));
                     rubrica.reloadData();

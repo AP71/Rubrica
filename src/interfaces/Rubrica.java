@@ -3,6 +3,7 @@ package interfaces;
 import utils.Data;
 import utils.Persona;
 import utils.Users;
+import utils.Utente;
 
 import javax.swing.*;
 import java.awt.*;
@@ -52,8 +53,9 @@ public class Rubrica extends JFrame {
             }
         });
         logoutButton.addActionListener(e -> {
-            new Login();
+            Utente.logOut();
             dispose();
+            new Login();
         });
         table.getSelectionModel().addListSelectionListener(e -> Users.getInstance().setSelectedUser(table.getSelectedRow()));
 

@@ -15,9 +15,13 @@ public class Utente {
         return utente;
     }
 
+    public static void logOut() {
+        Users.reset();
+        utente = null;
+    }
+
     public String tryLogin(String username, String password) {
         String res = Data.getInstance().tryLogin(username, password);
-        System.out.println(res);
         if (res == null) {
             this.username = username;
             return null;

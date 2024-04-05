@@ -8,7 +8,7 @@ import java.util.Properties;
 
 public class Data {
     private static Data data;
-    private final String path = "./database/credenziali_database.properties";
+    private final String path = "./credenziali_database.properties";
     private Connection connection = null;
     private String url;
     private String username;
@@ -91,7 +91,7 @@ public class Data {
     public void loadContact() {
         try {
             Statement stmt = this.connection.createStatement();
-            ResultSet rs = stmt.executeQuery("select id, nome, cognome, indirizzo, telefono, eta from contatti where utenti_username='"+username+"';");
+            ResultSet rs = stmt.executeQuery("select id, nome, cognome, indirizzo, telefono, eta from contatti where utenti_username='"+Utente.getInstance().getUsername()+"';");
             while(rs.next()) {
                 utenti.addUser(new Persona(rs.getInt("id"), rs.getString("nome"), rs.getString("cognome"), rs.getString("indirizzo"), rs.getString("telefono"), rs.getInt("eta")));
             }

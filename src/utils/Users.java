@@ -28,6 +28,11 @@ public class Users {
         users.add(newUser);
     }
 
+    public static void reset() {
+        instance.users.clear();
+        instance.selectedUser = -1;
+    }
+
     public int getLenght() { return users.size();}
 
     public void deleteUser(Persona persona) {
