@@ -8,8 +8,7 @@ public class Main {
     private static Data data;
 
     public static void main(String[] args) {
-        data = Data.getInstance();
-        if (data == null) {
+        if (Data.getInstance() == null) {
             return;
         }
         new Login();

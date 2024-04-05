@@ -34,11 +34,9 @@ public class Data {
         if (data == null) {
             try {
                 data = new Data();
-            } catch (SQLSyntaxErrorException sql) {
-                JOptionPane.showMessageDialog(null, "Errore di connessione con il database. "+sql.getMessage(),"Errore", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Errore di connessione con il database. "+e.getMessage(),"Errore", JOptionPane.ERROR_MESSAGE);
                 return null;
-            }catch (Exception e) {
-                throw new RuntimeException(e);
             }
         }
         return data;
