@@ -16,9 +16,9 @@ public class Rubrica extends JFrame {
     private JButton modificaButton;
     private JButton eliminaButton;
     private JPanel gridPanel;
-    private JPanel bottomPanel;
     private JTable table;
     private JScrollPane scrollPane;
+    private JButton logoutButton;
     private Rubrica self;
 
     public Rubrica(String titolo) {
@@ -50,6 +50,10 @@ public class Rubrica extends JFrame {
                     reloadData();
                 }
             }
+        });
+        logoutButton.addActionListener(e -> {
+            new Login();
+            dispose();
         });
         table.getSelectionModel().addListSelectionListener(e -> Users.getInstance().setSelectedUser(table.getSelectedRow()));
 
