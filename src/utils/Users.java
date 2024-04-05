@@ -2,6 +2,7 @@ package utils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Users {
 
@@ -21,7 +22,10 @@ public class Users {
     public List<Persona> getUsers() { return users;}
 
     public void addUser(Persona newUser) {
-        this.users.add(newUser);
+        for (Persona p: users) {
+            if (Objects.equals(p.getId(), newUser.getId())) return;
+        }
+        users.add(newUser);
     }
 
     public int getLenght() { return users.size();}
@@ -37,9 +41,5 @@ public class Users {
         return users.get(selectedUser);
     }
 
-    public void update(Persona persona) {
-        int index = users.indexOf(persona);
-        users.set(index, persona);
-    }
 
 }

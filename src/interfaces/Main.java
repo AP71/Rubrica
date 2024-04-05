@@ -2,7 +2,6 @@ package interfaces;
 
 import utils.Data;
 
-import javax.swing.*;
 
 public class Main {
 

@@ -38,7 +38,7 @@ public class Login extends JFrame{
         registerButton.addActionListener(e ->  {
             String res = Utente.getInstance().register(textFieldUsername.getText(), String.valueOf(passwordField.getPassword()));
             if (res.equals("")) {
-                JOptionPane.showMessageDialog(this, "Registrazione effettuata con successo.","Registrazione", JOptionPane.OK_OPTION);
+                JOptionPane.showMessageDialog(this, "Registrazione effettuata con successo.","Registrazione", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 if (res.contains("Duplicate entry")) {
                     JOptionPane.showMessageDialog(this, "Errore: impossibile registrarsi con il seguente username, utente già presente.","Registrazione", JOptionPane.ERROR_MESSAGE);

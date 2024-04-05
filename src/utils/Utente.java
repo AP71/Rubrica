@@ -34,4 +34,7 @@ public class Utente {
         return "";
     }
 
+    public String getUsername() {
+        return username;
+    }
 }

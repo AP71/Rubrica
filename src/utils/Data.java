@@ -3,10 +3,8 @@ package utils;
 import javax.swing.*;
 import java.io.*;
 import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.util.Properties;
-import java.util.Scanner;
 
 public class Data {
     private static Data data;
@@ -91,19 +89,71 @@ public class Data {
     }
 
     public void loadContact() {
-
+        try {
+            Statement stmt = this.connection.createStatement();
+            ResultSet rs = stmt.executeQuery("select id, nome, cognome, indirizzo, telefono, eta from contatti where utenti_username='"+username+"';");
+            while(rs.next()) {
+                utenti.addUser(new Persona(rs.getInt("id"), rs.getString("nome"), rs.getString("cognome"), rs.getString("indirizzo"), rs.getString("telefono"), rs.getInt("eta")));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void addContact(Persona persona) {
+        try {
+            String sql = "insert into contatti(nome, cognome, indirizzo, telefono, eta, utenti_username) values (?,?,?,?,?,?);";
+            PreparedStatement prep = connection.prepareStatement(sql);
+            prep.setString(1, persona.getNome());
+            prep.setString(2, persona.getCognome());
+            prep.setString(3, persona.getIndirizzo());
+            prep.setString(4, persona.getTelefono());
+            prep.setInt(5, persona.getEta());
+            prep.setString(6, Utente.getInstance().getUsername());
+            prep.execute();
 
+            Statement stmt = this.connection.createStatement();
+            ResultSet rs = stmt.executeQuery("select LAST_INSERT_ID()");
+            while(rs.next()) {
+                persona.setId(rs.getInt(1));
+            }
+            loadContact();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void updateContact(Persona persona) {
-
+        try {
+            Statement stmt = this.connection.createStatement();
+            byte[] salt = Cipher.genSalt();
+            String sql = "update contatti set nome=?, cognome=?, indirizzo=?, telefono=?, eta=? where id=?;";
+            PreparedStatement prep = connection.prepareStatement(sql);
+            prep.setString(1, persona.getNome());
+            prep.setString(2, persona.getCognome());
+            prep.setString(3, persona.getIndirizzo());
+            prep.setString(4, persona.getTelefono());
+            prep.setInt(5, persona.getEta());
+            prep.setInt(6, persona.getId());
+            prep.execute();
+            loadContact();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void deleteContact(Persona p) {
-
+        try {
+            Statement stmt = this.connection.createStatement();
+            byte[] salt = Cipher.genSalt();
+            String sql = "delete from contatti where id=?";
+            PreparedStatement prep = connection.prepareStatement(sql);
+            prep.setInt(1, p.getId());
+            prep.execute();
+            utenti.deleteUser(p);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     public TableModel getUsers() { return new TableModel(utenti); }
 }
