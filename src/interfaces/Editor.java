@@ -49,40 +49,32 @@ public class Editor extends JFrame {
     }
 
     private void initListener() {
-        salvaButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    String nome = textFieldNome.getText();
-                    String cognome = textFieldCognome.getText();
-                    String indirizzo = textFieldIndirizzo.getText();
-                    String telefono = textFieldTelefono.getText();
-                    int eta = Integer.parseInt(textFieldEta.getText());
-                    if (persona == null) {
-                        Data.getInstance().addContact(new Persona(nome, cognome, indirizzo, telefono, eta));
-                        rubrica.reloadData();
-                        dispose();
-                    } else {
-                        persona.setNome(nome);
-                        persona.setCognome(cognome);
-                        persona.setIndirizzo(indirizzo);
-                        persona.setTelefono(telefono);
-                        persona.setEta(eta);
-                        Data.getInstance().updateContact(persona);
-                        rubrica.reloadData();
-                        dispose();
-                    }
-                } catch (Exception ex) {
-                    ex.printStackTrace();
+        salvaButton.addActionListener(e -> {
+            try {
+                String nome = textFieldNome.getText();
+                String cognome = textFieldCognome.getText();
+                String indirizzo = textFieldIndirizzo.getText();
+                String telefono = textFieldTelefono.getText();
+                int eta = Integer.parseInt(textFieldEta.getText());
+                if (persona == null) {
+                    Data.getInstance().addContact(new Persona(nome, cognome, indirizzo, telefono, eta));
+                    rubrica.reloadData();
+                    dispose();
+                } else {
+                    persona.setNome(nome);
+                    persona.setCognome(cognome);
+                    persona.setIndirizzo(indirizzo);
+                    persona.setTelefono(telefono);
+                    persona.setEta(eta);
+                    Data.getInstance().updateContact(persona);
+                    rubrica.reloadData();
+                    dispose();
                 }
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
         });
-        annullaButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-            }
-        });
+        annullaButton.addActionListener(e -> dispose());
     }
 
     private void init(int larghezza, int lunghezza) {

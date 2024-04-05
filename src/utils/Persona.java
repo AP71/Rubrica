@@ -6,9 +6,19 @@ public class Persona {
     private String indirizzo;
     private String telefono;
     private Integer eta;
+    private Integer id;
     private String fileName;
 
     public Persona(String nome, String cognome, String indirizzo, String telefono, Integer eta) {
+        this.nome = nome;
+        this.cognome = cognome;
+        this.indirizzo = indirizzo;
+        this.telefono = telefono;
+        this.eta = eta;
+    }
+
+    public Persona(int id, String nome, String cognome, String indirizzo, String telefono, Integer eta) {
+        this.id = id;
         this.nome = nome;
         this.cognome = cognome;
         this.indirizzo = indirizzo;
@@ -56,11 +66,11 @@ public class Persona {
         this.eta = eta;
     }
 
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getFileName() {
-        return fileName;
+    public Integer getId() {
+        return this.id;
     }
 }
